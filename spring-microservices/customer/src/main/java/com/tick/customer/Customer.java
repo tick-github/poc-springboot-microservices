@@ -1,9 +1,6 @@
 package com.tick.customer;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -24,6 +21,7 @@ public class Customer {
             generator = "customer_id_sequence"
     )
     private Integer id;
+
     private String firstName;
     private String lastName;
     private String emailAddress;

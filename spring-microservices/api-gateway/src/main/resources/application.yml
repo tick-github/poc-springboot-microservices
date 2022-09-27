@@ -9,13 +9,9 @@ spring:
     gateway:
       routes:
         - id: customer
-          uri: lb://customer
+          uri: lb://CUSTOMER
           predicates:
-            - Path=/customer/**
-        - id: fraud
-          uri: lb://fraud
-          predicates:
-            - Path=/fraud/**
+            - Path=/api/v1/customers/**
 
 
 eureka:

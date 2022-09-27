@@ -2,14 +2,15 @@ package com.tick.customer;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class CustomerService{
 
     private final CustomerRepository customerRepository;
-    private final RestTemplate restTemplate;
 
     public void registerCustomer(CustomerRegistrationRequest request) {
 
@@ -19,17 +20,24 @@ public class CustomerService{
                 .emailAddress(request.emailAddress())
                 .build();
 
-        customerRepository.saveAndFlush(customer);
-
-        FraudCheckResponse fraudCheckResponse = restTemplate.getForObject(
-                "http://FRAUD/api/v1/fraud-check/{customerId}",
-                FraudCheckResponse.class,
-                customer.getId()
-        );
-
-        if (fraudCheckResponse != null && fraudCheckResponse.isFraudster()) {
-            throw new IllegalStateException("fraudster");
-        }
+        customerRepository.save(customer);
     }
 
+    public List<CustomerResponse> getAllCustomers() {
+        List<Customer> customers = customerRepository.findAll();
+        List<CustomerResponse> response = new ArrayList<>();
+
+        customers.forEach(
+                customer ->
+                        response.add(
+                                CustomerResponse.builder()
+                                        .firstName(customer.getFirstName())
+                                        .lastName(customer.getLastName())
+                                        .emailAddress(customer.getEmailAddress())
+                                        .build()
+                        )
+        );
+
+        return response;
+    }
 }
